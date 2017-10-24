@@ -1,0 +1,14 @@
+{
+  "name": "t-mobile-voucher",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "tf-init": "cd terraform && terraform init",
+    "tf-plan": "cd terraform && terraform plan",
+    "tf-apply": "cd terraform && terraform apply",
+    "tf-destroy": "cd terraform && terraform destroy"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1"
+  }
+}
