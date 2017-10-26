@@ -27,3 +27,11 @@ resource "aws_lambda_function" "process-odd" {
     runtime = "nodejs6.10"
     role = "${aws_iam_role.t-mobile-role.arn}"
 }
+
+resource "aws_lambda_function" "get-voucher" {
+    filename = "zip/lambda.zip"
+    function_name = "get-voucher"
+    handler = "get-voucher.handler"
+    runtime = "nodejs6.10"
+    role = "${aws_iam_role.t-mobile-role.arn}"
+}

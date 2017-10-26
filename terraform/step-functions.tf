@@ -1,3 +1,21 @@
+resource "aws_sfn_state_machine" "get-voucher-state-machine" {
+  name     = "get-voucher-state-machine"
+  role_arn = "${aws_iam_role.t-mobile-role.arn}"
+
+  definition = <<EOF
+{
+  "StartAt": "Get voucher",
+  "States": {
+    "Get voucher": {
+      "Type": "Task",
+      "Resource": "${aws_lambda_function.get-voucher.arn}",
+      "End": true
+    }
+  }
+}
+EOF
+}
+
 resource "aws_sfn_state_machine" "t-mobile-state-machine" {
   name     = "t-mobile-state-machine"
   role_arn = "${aws_iam_role.t-mobile-role.arn}"
