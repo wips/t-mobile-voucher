@@ -27,7 +27,7 @@ resource "aws_api_gateway_integration" "check-number" {
   http_method             = "${aws_api_gateway_method.check-number-get.http_method}"
   integration_http_method = "POST"
   type                    = "AWS"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${aws_lambda_function.check-number.arn}/invocations"
+  uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.check-number.arn}/invocations"
   credentials             = "arn:aws:iam::${var.account_id}:role/${aws_iam_role.t-mobile-role.name}"
 
   request_templates {
@@ -62,7 +62,7 @@ resource "aws_lambda_permission" "check-number" {
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.check-number.arn}"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "arn:aws:execute-api:${var.aws_region}:${var.account_id}:${aws_api_gateway_rest_api.t-mobile-infrastructure.id}/*/*/*"
+  source_arn = "arn:aws:execute-api:${var.region}:${var.account_id}:${aws_api_gateway_rest_api.t-mobile-infrastructure.id}/*/*/*"
 }
 
 ########### POST (get-voucher) ###########
@@ -86,8 +86,18 @@ resource "aws_api_gateway_integration" "get-voucher" {
   http_method             = "${aws_api_gateway_method.get-voucher-post.http_method}"
   integration_http_method = "POST"
   type                    = "AWS"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:states:action/StartExecution"
+  uri                     = "arn:aws:apigateway:${var.region}:states:action/StartExecution"
   credentials             = "arn:aws:iam::${var.account_id}:role/${aws_iam_role.t-mobile-role.name}"
+
+  request_templates {
+    "application/json" = <<EOF
+    {
+      "input": "{\"memberId\":\"" + $input.params('memberId') +"\",\"campaignId\":\"" + $input.params('campaignId') + "\"}",
+      "name": "tf-invoke" + $input.params('memberId') + "-" + $input.params('campaignId'),
+      "stateMachineArn": "${aws_sfn_state_machine.get-voucher-state-machine.id}"
+    }
+    EOF
+  }
 }
 
 resource "aws_api_gateway_method_response" "get-voucher-post-200" {
