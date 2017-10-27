@@ -92,8 +92,7 @@ resource "aws_api_gateway_integration" "get-voucher" {
   request_templates {
     "application/json" = <<EOF
     {
-      "input": "{\"memberId\":\"" + $input.params('memberId') +"\",\"campaignId\":\"" + $input.params('campaignId') + "\"}",
-      "name": "tf-invoke" + $input.params('memberId') + "-" + $input.params('campaignId'),
+      "input": "{\"memberId\":\"$input.json('$.memberId')\",\"campaignId\":\"$input.json('$.campaignId')\"}",
       "stateMachineArn": "${aws_sfn_state_machine.get-voucher-state-machine.id}"
     }
     EOF
