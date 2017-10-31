@@ -5,27 +5,24 @@ exports.handler = (event, context, callback) => {
     memberId: event.memberId,
     campaignId: event.campaignId,
   };
-  const name = createTimestamp().toString();
   const params = {
     stateMachineArn: event.stateMachineArn,
     input: JSON.stringify(input),
-    name,
   };
 
   const stepFunctions = new AWS.StepFunctions();
 
   const checkResult = executionArn => setTimeout(() => {
-    stepFunctions.getExecutionHistory({ executionArn }, (error, data) => {
+    stepFunctions.describeExecution({ executionArn }, (error, data) => {
       if (error) {
         callback(error);
       }
       else {
-        const event = data.events.find(event => event.type === 'ExecutionSucceeded');
-        if (event) {
-          callback(null, event.executionSucceededEventDetails.output);
+        if (data.status === 'RUNNING') {
+          checkResult(executionArn);
         }
         else {
-          checkResult(executionArn);
+          callback(null, data.output);
         }
       }
     })
@@ -40,5 +37,3 @@ exports.handler = (event, context, callback) => {
     }
   });
 };
-
-const createTimestamp = () => new Date().valueOf();
