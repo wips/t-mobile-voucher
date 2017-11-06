@@ -7,7 +7,7 @@
     "tf-plan": "cd terraform && terraform plan",
     "tf-apply": "cd terraform && terraform apply",
     "tf-destroy": "cd terraform && terraform destroy",
-    "delete-tf-data": "cd terraform && rm -f terraform.tfstate && rm -f terraform.tfstate.backup && rm -f -R .terraform && rm -f -R zip"
+    "tf-clean": "cd terraform && rm -f terraform.tfstate && rm -f terraform.tfstate.backup && rm -f -R .terraform && rm -f -R zip"
   },
   "devDependencies": {
     "eslint": "^4.9.0",
