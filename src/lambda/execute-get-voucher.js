@@ -25,8 +25,8 @@ exports.handler = (event, context, callback) => {
           callback(null, data.output);
         }
       }
-    })
-  }, 50);
+    });
+  }, 10);
 
   stepFunctions.startExecution(params, (error, data) => {
     if (error) {
